@@ -13,8 +13,13 @@ try {
   process.exit(1);
 }
 
-if (!Array.isArray(appConfig.menu)) {
-  console.log(chalk.red('menu应该是一个Array'));
+if (appConfig.menu && !Array.isArray(appConfig.menu)) {
+  console.log(chalk.red('menu字段应该是一个Array'));
+  process.exit(1);
+}
+
+if (appConfig.other && !Array.isArray(appConfig.other)) {
+  console.log(chalk.red('other字段应该是一个Array'));
   process.exit(1);
 }
 

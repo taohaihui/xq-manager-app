@@ -1,6 +1,6 @@
 {
   "name": "xq-manager-app",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "导出一个根组件，根据app.config.json配置文件生成路由",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
