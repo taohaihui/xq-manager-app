@@ -1,0 +1,45 @@
+{
+  "menu": [
+    {
+      "key": "/system",
+      "title": "系统管理",
+      "subMenu": [{
+          "key": "/system/list",
+          "title": "列表管理"
+        },
+        {
+          "key": "/system/manger",
+          "title": "列表管理"
+        }
+      ]
+    },
+    {
+      "key": "/organization/list",
+      "title": "机构管理"
+    },
+    {
+      "key": "/authorization/list",
+      "title": "机构权限管理"
+    },
+    {
+      "key": "/configuration/list",
+      "title": "机构配置项管理"
+    },
+    {
+      "key": "/administrator/list",
+      "title": "机构管理员管理"
+    },
+    {
+      "key": "/user/list",
+      "title": "用户管理"
+    },
+    {
+      "key": "/role/list",
+      "title": "角色管理"
+    },
+    {
+      "key": "/log/list",
+      "title": "同步日志"
+    }
+  ]
+}
