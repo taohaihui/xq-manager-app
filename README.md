@@ -77,7 +77,8 @@ npm install xq-manager-app --dev
 
 ### 2、使用
 * 在项目根目录下运行以下命令创建 app.config.json 配置的页面和路由信息
-   ```node
+
+  ```node
   yarn run create
   ```
   or
@@ -86,6 +87,7 @@ npm install xq-manager-app --dev
   npm run create
   ```
 * App 组件的用法
+
   ```js
   import React from 'react';
   import ReactDOM from 'react-dom';
@@ -98,17 +100,21 @@ npm install xq-manager-app --dev
     document.getElementById('root')
   );
   ```
+
 * App 组件props说明
   * header 自定义header部分
   * logo 自定义logo部分
 
 ### 3、路由跳转
 * 使用props的history
+
   ```js
   // 只能从配置页面的props中获得
   this.props.history.push(path, state);
   ```
+  
 * 使用导出的history
+
   ```js
   import { history } from 'xq-manager-app';
 
