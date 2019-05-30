@@ -133,6 +133,7 @@ export default class MenuRoot extends React.Component<Props> {
   handelToggle() {
     this.setState({
       collapsed: !this.state.collapsed,
+      openKeys: !this.state.collapsed ? [] : this.props.openKeys
     });
   }
 
