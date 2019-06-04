@@ -27,7 +27,7 @@ let nowDir = process.cwd();
 
 let menuDir = appConfig.menu ? getPageDir(appConfig.menu) : { newPath: [], allPath: [] };
 let otherDir = appConfig.other ? getPageDir(appConfig.other) : { newPath: [], allPath: [] };
-let errDir = appConfig['404'] ? getPageDir([{ key: '/404', 'title': '错误页面'}]) : { newPath: [], allPath: [] };
+let errDir = appConfig['404'] ? getPageDir([{ key: '/404', 'title': '错误页面' }]) : { newPath: [], allPath: [] };
 
 let newPagePath = [...menuDir.newPath, ...otherDir.newPath, ...errDir.newPath]; // 新增页面
 let menuallPagePath = menuDir.allPath; // 导航栏的所有页面
@@ -80,8 +80,8 @@ ${errallPagePath.map(item => {
     return `import ${item.ComponentName} from '${item.dir.replace(/\\/g, '/')}';`
   }).join('\n')}
 
-let appConfig = ${JSON.stringify(appConfig, null, 2)};
-let menuRouter = [
+const appConfig = ${JSON.stringify(appConfig, null, 2)};
+const menuRouter = [
   ${
     menuallPagePath.map(item => {
       return `{
@@ -94,7 +94,7 @@ let menuRouter = [
     }
   ];
 
-let otherRouter = [
+const otherRouter = [
   ${
     otherallPagePath.map(item => {
       return `{
@@ -106,7 +106,7 @@ let otherRouter = [
     }
 ];
 
-let errRouter = [
+const errRouter = [
   ${
     errallPagePath.map(item => {
       return `{
