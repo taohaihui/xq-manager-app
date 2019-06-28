@@ -53,8 +53,11 @@ newPagePath.forEach((item: dirItem) => {
 
       textCSS = textCSS.replace('className', item.ComponentName);
 
-      fs.writeFileSync(path.resolve(item.dir, 'index.jsx'), textJSX, { encoding: 'utf8' });
-      fs.writeFileSync(path.resolve(item.dir, 'style.scss'), textCSS, { encoding: 'utf8' });
+      fs.writeFileSync(path.resolve(item.dir, `${item.ComponentName}.jsx`), textJSX, { encoding: 'utf8' });
+      fs.writeFileSync(path.resolve(item.dir, `${item.ComponentName}.scss`), textCSS, { encoding: 'utf8' });
+
+      fs.remove(path.resolve(item.dir, 'index.jsx'));
+      fs.remove(path.resolve(item.dir, 'style.scss'));
     }).catch(err => {
       console.log(chalk.red('error:拷贝文件失败'));
       console.log(err);
@@ -68,24 +71,34 @@ writeRouterFile();
 // 重写router.js文件
 function writeRouterFile() {
   let routerText = `
-${menuallPagePath.map(item => {
-    return `import ${item.ComponentName} from '${item.dir.replace(/\\/g, '/')}';`
-  }).join('\n')}
+${
+    menuallPagePath.map(item => {
+      let name = item.ComponentName;
+      return `import ${name} from '${item.dir.replace(/\\/g, '/')}/${name}.jsx';`
+    }).join('\n')
+    }
   
-${otherallPagePath.map(item => {
-    return `import ${item.ComponentName} from '${item.dir.replace(/\\/g, '/')}';`
-  }).join('\n')}
+${
+    otherallPagePath.map(item => {
+      let name = item.ComponentName;
+      return `import ${name} from '${item.dir.replace(/\\/g, '/')}/${name}.jsx';`
+    }).join('\n')
+    }
   
-${errallPagePath.map(item => {
-    return `import ${item.ComponentName} from '${item.dir.replace(/\\/g, '/')}';`
-  }).join('\n')}
+${
+    errallPagePath.map(item => {
+      let name = item.ComponentName;
+      return `import ${name} from '${item.dir.replace(/\\/g, '/')}/${name}.jsx';`
+    }).join('\n')
+    }
 
-const appConfig = ${JSON.stringify(appConfig, null, 2)};
-const menuRouter = [
+var appConfig = ${JSON.stringify(appConfig, null, 2)};
+var menuRouter = [
   ${
     menuallPagePath.map(item => {
       return `{
         path: '${item.path}',
+        auth: '${item.auth}',
         component: ${item.ComponentName},
         parent: '${item.parent}',
         title: '${item.title}'
@@ -94,11 +107,12 @@ const menuRouter = [
     }
   ];
 
-const otherRouter = [
+var otherRouter = [
   ${
     otherallPagePath.map(item => {
       return `{
         path: '${item.path}',
+        auth: '${item.auth}',
         component: ${item.ComponentName},
         title: '${item.title}'
       }`;
@@ -106,7 +120,7 @@ const otherRouter = [
     }
 ];
 
-const errRouter = [
+var errRouter = [
   ${
     errallPagePath.map(item => {
       return `{
@@ -133,6 +147,7 @@ export {
 // 递归找到还未创建的路径
 interface MenuItem {
   key: string,
+  auth: string,
   title: string,
   subMenu?: []
 }
@@ -160,6 +175,7 @@ function getPageDir(menu: any[], parent?: string): { newPath: any[], allPath: an
 
       allPath.push({
         path: item.key,
+        auth: item.auth || '',
         dir: pageDir,
         title: item.title,
         parent: parent || '',

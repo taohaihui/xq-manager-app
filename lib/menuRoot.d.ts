@@ -5,11 +5,14 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css';
 interface Props {
     openKeys: string[];
     selectedKeys: string[];
+    collapsed: boolean;
+    setCollapsed: (bool: boolean) => void;
+    getAuth: (auth: string) => boolean;
     menu: any[];
     location: {
         state: boolean;
     };
-    logo?: JSX.Element;
+    logo?: (collapsed: boolean) => JSX.Element;
     header?: JSX.Element;
 }
 interface State {

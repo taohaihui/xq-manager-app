@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './style.scss';
+import './ComponentName.scss';
 
 // ComponentPage
 export default class ComponentName extends Component {

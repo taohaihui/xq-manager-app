@@ -10,7 +10,7 @@ or
 npm install xq-manager-app --dev
 ```
 
-### 2、配置 app.config.json （该文件必须在src目录下）
+### 2、配置 app.config.json （该文件必须在src根目录下）
 * app.config.json配置模板
   ```json
   {
@@ -18,6 +18,7 @@ npm install xq-manager-app --dev
         "key": "/a",
         "title": "模块A",
         "icon": "form",
+        "auth": "/a",
         "subMenu": [{
             "key": "/a/a",
             "title": "子模块a"
@@ -73,11 +74,23 @@ npm install xq-manager-app --dev
   * icon antd中的icon字体图标
   * subMenu 嵌套的导航
   * hidden 为true时该页面不会在导航栏中显示
+  * auth 权限字段，必须明确指定一个字符串，当auth字段转换成布尔值为false时，该页面可被访问，为true时会匹配传入的权限信息
 
 
 ### 2、使用
 * 在项目根目录下运行以下命令创建 app.config.json 配置的页面和路由信息
+  
+  链接xq-manager-app库
+  ```node
+  yarn link xq-manager-app
+  ```
+  or
 
+  ```node
+  npm link xq-manager-app
+  ```
+
+  创建页面和路由管理
   ```node
   yarn run create
   ```
@@ -96,14 +109,16 @@ npm install xq-manager-app --dev
   ReactDOM.render(
     <App
       header={<h1>自定义 header</h1>}
-      logo={<Button type="primary">自定义logo</Button>} />,
+      logo={
+        (collapsed)=>{ return <span>logo</span> }
+      } />,
     document.getElementById('root')
   );
   ```
 
 * App 组件props说明
   * header 自定义header部分
-  * logo 自定义logo部分
+  * logo 自定义logo部分,该函数会传入一个布尔值，代码左侧导航栏的收缩状态
 
 ### 3、路由跳转
 * 使用props的history
@@ -122,3 +137,13 @@ npm install xq-manager-app --dev
   history.push(path, state);
   ```
 
+### 4、设置权限信息
+  ```js
+  // app.config.json文件中配置的页面都会接收该函数
+  let authInfo=[
+    {auth: '/a',name:'模块A'},
+    {auth: '/b',name:'模块B'},
+  ]
+
+  this.props.setAuthInfo(authInfo);
+  ```

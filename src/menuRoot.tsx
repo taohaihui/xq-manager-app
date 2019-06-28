@@ -9,16 +9,19 @@ import history from './history';
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 
-const { Header, Sider, Content } = Layout;
+const { Header, Sider } = Layout;
 
 interface Props {
   openKeys: string[],
   selectedKeys: string[],
+  collapsed: boolean,
+  setCollapsed: (bool: boolean) => void,
+  getAuth: (auth: string) => boolean,
   menu: any[],
   location: {
     state: boolean
   },
-  logo?: JSX.Element,
+  logo?: (collapsed: boolean) => JSX.Element,
   header?: JSX.Element
 }
 
@@ -38,23 +41,36 @@ export default class MenuRoot extends React.Component<Props> {
     this.state = {
       openKeys: this.props.openKeys,
       selectedKeys: this.props.selectedKeys,
-      collapsed: this.props.location.state || false
+      // collapsed: false
+      collapsed: this.props.collapsed
     };
   }
 
   componentDidMount() {
-    this.menuScroll = new PerfectScrollbar(document.getElementById('menu-scroll-xq'));
-    this.contentScroll = new PerfectScrollbar(document.getElementById('layout-content-xq'));
+    try {
+      this.menuScroll = new PerfectScrollbar(document.getElementById('menu-scroll-xq'));
+      this.contentScroll = new PerfectScrollbar(document.getElementById('layout-content-xq'));
+    } catch (err) {
+      // IE9不支持 PerfectScrollbar
+    }
   }
 
   componentDidUpdate() {
-    this.menuScroll.update();
-    this.contentScroll.update();
+    try {
+      this.menuScroll.update();
+      this.contentScroll.update();
+    } catch (err) {
+      // IE9不支持 PerfectScrollbar
+    }
   }
 
   componentWillUnmount() {
-    this.menuScroll.destroy();
-    this.contentScroll.destroy();
+    try {
+      this.menuScroll.destroy();
+      this.contentScroll.destroy();
+    } catch (err) {
+      // IE9不支持 PerfectScrollbar
+    }
   }
 
   render() {
@@ -63,13 +79,12 @@ export default class MenuRoot extends React.Component<Props> {
         <Sider
           className="layout-sider-xq"
           style={{ background: 'none' }}
-          // collapsible
           collapsed={this.state.collapsed}
           onCollapse={this.handelToggle.bind(this)}>
           <Header
             className="layout-logo-xq"
-            style={{ padding: 0 }}>
-            {this.props.logo}
+            style={{ padding: 0, overflow: 'hidden', textAlign: 'center' }}>
+            {this.props.logo && this.props.logo(this.state.collapsed)}
           </Header>
           <div
             id="menu-scroll-xq"
@@ -93,25 +108,25 @@ export default class MenuRoot extends React.Component<Props> {
           <Header
             className="layout-header-xq"
             style={{ paddingLeft: 0 }}>
-            <div style={{ display: 'inline-block', width: 30 }}>
+            <div style={{ display: 'inline-block', width: 30, verticalAlign: 'top' }}>
               <Icon
                 className="trigger-xq"
-                style={{ fontSize: 24, lineHeight: '64px', color: '#fff', cursor: 'pointer' }}
+                style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
                 type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={this.handelToggle.bind(this)} />
             </div>
-            <div style={{ display: 'inline-block', width: 'calc(100% - 30px)', height: '100%' }}>
+            <div style={{ display: 'inline-block', width: 'calc(100% - 30px)', height: '100%', overflow: 'hidden' }}>
               {this.props.header}
             </div>
           </Header>
-          <Content
+          <div
             id="layout-content-xq"
             className="layout-content-xq"
-            style={{ position: 'relative', padding: 10, background: '#ddd' }}>
+            style={{ position: 'relative', padding: 10, background: '#ddd', height: 'calc(100% - 64px)' }}>
             {
               this.props.children
             }
-          </Content>
+          </div>
         </Layout>
       </Layout>
     );
@@ -127,21 +142,30 @@ export default class MenuRoot extends React.Component<Props> {
     // this.setState({
     //   selectedKeys: params.selectedKeys
     // });
-    history.push(params.key, this.state.collapsed);
+    history.push(params.key);
   }
 
   handelToggle() {
+    this.props.setCollapsed(!this.state.collapsed); //设置导航栏是否展开
     this.setState({
       collapsed: !this.state.collapsed,
       openKeys: !this.state.collapsed ? [] : this.props.openKeys
     });
   }
 
+
+
   // 渲染导航列表
   renderMenu(menu: any[]): JSX.Element[] {
     let router = [];
 
     router = menu.map(item => {
+      let isAuth = this.props.getAuth(item.auth as string);
+
+      if (item.hidden || !isAuth) {
+        return null;
+      }
+
       if (item.subMenu) {
         return (
           <Menu.SubMenu
@@ -154,10 +178,6 @@ export default class MenuRoot extends React.Component<Props> {
             {this.renderMenu(item.subMenu)}
           </Menu.SubMenu>
         );
-      }
-
-      if (item.hidden) {
-        return null;
       }
 
       return (
