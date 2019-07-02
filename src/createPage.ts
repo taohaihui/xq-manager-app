@@ -46,10 +46,10 @@ newPagePath.forEach((item: dirItem) => {
       let textJSX = fs.readFileSync(path.resolve(item.dir, 'index.jsx'), { encoding: 'utf8' });
       let textCSS = fs.readFileSync(path.resolve(item.dir, 'style.scss'), { encoding: 'utf8' });
 
-      textJSX = textJSX.replace('ComponentName', item.ComponentName);
-      textJSX = textJSX.replace('ComponentContent', item.title);
-      textJSX = textJSX.replace('ComponentPage', item.title);
-      textJSX = textJSX.replace('ComponentClassName', item.ComponentName);
+      textJSX = textJSX.replace(/ComponentName/g, item.ComponentName);
+      textJSX = textJSX.replace(/ComponentContent/g, item.title);
+      textJSX = textJSX.replace(/ComponentPage/g, item.title);
+      textJSX = textJSX.replace(/ComponentClassName/g, item.ComponentName);
 
       textCSS = textCSS.replace('className', item.ComponentName);
 
