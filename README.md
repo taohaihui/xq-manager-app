@@ -147,3 +147,16 @@ npm install xq-manager-app --dev
 
   this.props.setAuthInfo(authInfo);
   ```
+
+
+### 5、设置面包屑
+  ```js
+  // app.config.json文件中menu字段配置的页面都会接收该函数
+  let arr = [
+      { name: '面包屑名称1' },
+      { path: '/b/b?a=1&b=2', name: '模块b' },
+      { path: '/a/a', name: '面包屑名称2' }
+    ];
+
+    this.props.setBreadcrumb(arr);
+  ```

@@ -12,13 +12,17 @@ interface Props {
     location: {
         state: boolean;
     };
+    setAuthInfo: (authInfo: []) => void;
     logo?: (collapsed: boolean) => JSX.Element;
+    logout?: () => void;
     header?: JSX.Element;
+    children?: any;
 }
 interface State {
     openKeys: string[];
     selectedKeys: string[];
     collapsed: boolean;
+    breadcrumb?: any[];
 }
 export default class MenuRoot extends React.Component<Props> {
     state: State;
@@ -31,7 +35,11 @@ export default class MenuRoot extends React.Component<Props> {
     render(): JSX.Element;
     handleOpen(openKeys: any): void;
     handleMenu(params: any): void;
+    setBreadcrumb(breadcrumb: any): void;
     handelToggle(): void;
+    handleLogOut(): void;
+    renderBreadcrumb(): JSX.Element;
+    handleBreadcrumb(path: any, e: any): void;
     renderMenu(menu: any[]): JSX.Element[];
 }
 export {};

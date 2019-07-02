@@ -7,7 +7,8 @@ import MenuRoot from './menuRoot';
 
 interface Props {
   logo?: (collapsed: boolean) => JSX.Element,
-  header?: JSX.Element
+  header?: JSX.Element,
+  logout?: () => void
 }
 interface State {
   authInfo: any[],
@@ -25,6 +26,36 @@ export default class App extends React.Component<Props> {
       collapsed: false
     };
   };
+
+  static setSession(name, value) {
+    if (typeof sessionStorage === 'object') {
+      var data = value;
+      if (typeof value !== 'string') {
+        if (data === undefined) {
+          data = null;
+        } else {
+          data = JSON.stringify(data);
+        }
+      }
+      sessionStorage.setItem(name, data);
+    }
+  }
+
+  static getSession(name) {
+    if (typeof sessionStorage === 'object') {
+      var data = sessionStorage.getItem(name);
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        return data;
+      }
+    }
+    return null;
+  }
+
+  componentDidMount() {
+    this.getAuthInfo();
+  }
 
   render() {
     return (
@@ -72,7 +103,7 @@ export default class App extends React.Component<Props> {
                   path={item.path}
                   render={
                     props => {
-                      const C = item.component;
+                      const C = item.component; //页面
 
                       return (
                         <MenuRoot
@@ -80,11 +111,14 @@ export default class App extends React.Component<Props> {
                           {...props}
                           collapsed={this.state.collapsed}
                           setCollapsed={this.setCollapsed.bind(this)}
+                          setAuthInfo={this.setAuthInfo.bind(this)}
                           getAuth={this.getAuth.bind(this)}
                           menu={appConfig.menu}
                           openKeys={[item.parent]}
                           selectedKeys={[item.path]}>
-                          <C {...props} setAuthInfo={this.setAuthInfo.bind(this)} />
+                          <C
+                            {...props}
+                            setAuthInfo={this.setAuthInfo.bind(this)} />
                         </MenuRoot>
                       );
                     }
@@ -106,9 +140,19 @@ export default class App extends React.Component<Props> {
     );
   }
 
+  // 从缓存获取权限信息
+  getAuthInfo() {
+    let authInfo = App.getSession('authInfo-from-user');
+
+    if (authInfo) {
+      this.setState({ authInfo });
+    }
+  }
+
   // 开放给页面设置权限信息的接口
   setAuthInfo(authInfo) {
     this.setState({ authInfo });
+    App.setSession('authInfo-from-user', authInfo); //缓存权限信息
   }
 
   // 设置导航栏是否展开,切换导航后保持一致

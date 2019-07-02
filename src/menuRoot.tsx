@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Tooltip, Breadcrumb } from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import history from './history';
 
@@ -8,6 +8,7 @@ import history from './history';
 // import 'antd/lib/icon/style/index.css';
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
+const querystring = require('querystring');
 
 const { Header, Sider } = Layout;
 
@@ -21,14 +22,18 @@ interface Props {
   location: {
     state: boolean
   },
+  setAuthInfo: (authInfo: []) => void,
   logo?: (collapsed: boolean) => JSX.Element,
-  header?: JSX.Element
+  logout?: () => void,
+  header?: JSX.Element,
+  children?: any
 }
 
 interface State {
   openKeys: string[],
   selectedKeys: string[],
-  collapsed: boolean
+  collapsed: boolean,
+  breadcrumb?: any[]
 }
 export default class MenuRoot extends React.Component<Props> {
   state: State
@@ -41,8 +46,8 @@ export default class MenuRoot extends React.Component<Props> {
     this.state = {
       openKeys: this.props.openKeys,
       selectedKeys: this.props.selectedKeys,
-      // collapsed: false
-      collapsed: this.props.collapsed
+      collapsed: this.props.collapsed, // 侧边栏的收缩状态
+      breadcrumb: [] // 面包屑
     };
   }
 
@@ -76,16 +81,20 @@ export default class MenuRoot extends React.Component<Props> {
   render() {
     return (
       <Layout className="layout-wrap-xq" style={{ height: '100%' }}>
+        {/* 左侧导航栏 */}
         <Sider
           className="layout-sider-xq"
           style={{ background: 'none' }}
           collapsed={this.state.collapsed}
           onCollapse={this.handelToggle.bind(this)}>
+          {/* logo */}
           <Header
             className="layout-logo-xq"
             style={{ padding: 0, overflow: 'hidden', textAlign: 'center' }}>
             {this.props.logo && this.props.logo(this.state.collapsed)}
           </Header>
+
+          {/* 导航菜单 */}
           <div
             id="menu-scroll-xq"
             style={{ height: 'calc(100% - 64px)', position: 'relative' }}>
@@ -107,7 +116,8 @@ export default class MenuRoot extends React.Component<Props> {
         <Layout>
           <Header
             className="layout-header-xq"
-            style={{ paddingLeft: 0 }}>
+            style={{ padding: 0 }}>
+            {/* 控制导航栏收缩 */}
             <div style={{ display: 'inline-block', width: 30, verticalAlign: 'top' }}>
               <Icon
                 className="trigger-xq"
@@ -115,16 +125,43 @@ export default class MenuRoot extends React.Component<Props> {
                 type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={this.handelToggle.bind(this)} />
             </div>
-            <div style={{ display: 'inline-block', width: 'calc(100% - 30px)', height: '100%', overflow: 'hidden' }}>
+
+            {/* 自定义header部分 */}
+            <div style={{ display: 'inline-block', width: 'calc(100% - 80px)', height: '100%', overflow: 'hidden' }}>
               {this.props.header}
             </div>
+
+            {/* 退出登录 */}
+            <div style={{ display: 'inline-block', width: 50, height: '100%', overflow: 'hidden' }}>
+              <Tooltip title="退出登录">
+                <Icon
+                  style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
+                  type="poweroff"
+                  onClick={this.handleLogOut.bind(this)} />
+              </Tooltip>
+            </div>
           </Header>
+
+          {/* 页面主体内容 */}
           <div
             id="layout-content-xq"
             className="layout-content-xq"
             style={{ position: 'relative', padding: 10, background: '#ddd', height: 'calc(100% - 64px)' }}>
+            {/* 面包屑 */}
+            <div
+              className="breadcrumb-xq"
+              style={{ padding: '0 0 10px 0' }}>
+              {
+                this.state.breadcrumb.length > 0 && this.renderBreadcrumb()
+              }
+            </div>
+
+            {/* 注入设置面包屑的接口 */}
             {
-              this.props.children
+              React.cloneElement(
+                this.props.children,
+                { setBreadcrumb: this.setBreadcrumb.bind(this) }
+              )
             }
           </div>
         </Layout>
@@ -145,6 +182,11 @@ export default class MenuRoot extends React.Component<Props> {
     history.push(params.key);
   }
 
+  // 设置面包屑参数
+  setBreadcrumb(breadcrumb) {
+    this.setState({ breadcrumb });
+  }
+
   handelToggle() {
     this.props.setCollapsed(!this.state.collapsed); //设置导航栏是否展开
     this.setState({
@@ -153,7 +195,45 @@ export default class MenuRoot extends React.Component<Props> {
     });
   }
 
+  handleLogOut() {
+    this.props.setAuthInfo([]);
+    history.push('/login');
+    this.props.logout && this.props.logout(); //退出登录的回调函数
+  }
 
+  // 渲染面包屑
+  renderBreadcrumb() {
+    let len = this.state.breadcrumb.length;
+    return (
+      <Breadcrumb>
+        {
+          this.state.breadcrumb.map((item, index) => {
+            return (
+              <Breadcrumb.Item key={index}>
+                {
+                  len === index + 1 || !item.path
+                    ? (
+                      <span>{item.name}</span>
+                    )
+                    : (
+                      <a
+                        href=""
+                        onClick={this.handleBreadcrumb.bind(this, item.path)}>{item.name}</a>
+                    )
+                }
+              </Breadcrumb.Item>
+            )
+          })
+        }
+      </Breadcrumb>
+    );
+  }
+
+  // 面包屑跳转
+  handleBreadcrumb(path, e) {
+    e.preventDefault();
+    history.push(path);
+  }
 
   // 渲染导航列表
   renderMenu(menu: any[]): JSX.Element[] {
