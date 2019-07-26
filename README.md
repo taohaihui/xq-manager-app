@@ -108,10 +108,12 @@ npm install xq-manager-app --dev
 
   ReactDOM.render(
     <App
-      header={<h1>自定义 header</h1>}
+      headerHeight={100}
+      headerComponent={<p style={{ color: '#fff' }}>自定义 header</p>}
       logo={
         (collapsed)=>{ return <span>logo</span> }
-      } />,
+      } 
+      logout={this.handleLogout.bind(this)}/>,
     document.getElementById('root')
   );
   ```

@@ -3,12 +3,8 @@ import { Layout, Menu, Icon, Tooltip, Breadcrumb } from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import history from './history';
 
-// import 'antd/lib/layout/style/index.css';
-// import 'antd/lib/menu/style/index.css';
-// import 'antd/lib/icon/style/index.css';
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
-const querystring = require('querystring');
 
 const { Header, Sider } = Layout;
 
@@ -25,7 +21,8 @@ interface Props {
   setAuthInfo: (authInfo: []) => void,
   logo?: (collapsed: boolean) => JSX.Element,
   logout?: () => void,
-  header?: JSX.Element,
+  headerHeight?: number,
+  headerComponent?: JSX.Element,
   children?: any
 }
 
@@ -33,8 +30,10 @@ interface State {
   openKeys: string[],
   selectedKeys: string[],
   collapsed: boolean,
-  breadcrumb?: any[]
+  breadcrumb: any[],
+  siderWidth: number
 }
+
 export default class MenuRoot extends React.Component<Props> {
   state: State
   menuScroll: PerfectScrollbar
@@ -47,7 +46,8 @@ export default class MenuRoot extends React.Component<Props> {
       openKeys: this.props.openKeys,
       selectedKeys: this.props.selectedKeys,
       collapsed: this.props.collapsed, // 侧边栏的收缩状态
-      breadcrumb: [] // 面包屑
+      breadcrumb: [], // 面包屑
+      siderWidth: 200
     };
   }
 
@@ -80,24 +80,41 @@ export default class MenuRoot extends React.Component<Props> {
 
   render() {
     return (
-      <Layout className="layout-wrap-xq" style={{ height: '100%' }}>
-        {/* 左侧导航栏 */}
-        <Sider
+      <div
+        className="layout-wrap-xq"
+        style={{
+          width: '100%',
+          height: '100%',
+        }}>
+        <div
           className="layout-sider-xq"
-          style={{ background: 'none' }}
-          collapsed={this.state.collapsed}
-          onCollapse={this.handelToggle.bind(this)}>
-          {/* logo */}
-          <Header
-            className="layout-logo-xq"
-            style={{ padding: 0, overflow: 'hidden', textAlign: 'center' }}>
-            {this.props.logo && this.props.logo(this.state.collapsed)}
-          </Header>
+          style={{
+            width: this.state.siderWidth,
+            height: '100%',
+            background: '#001529',
+            float: 'left'
+          }}>
 
-          {/* 导航菜单 */}
+          {/* logo */}
+          <div
+            className="layout-logo-xq"
+            style={{
+              height: this.props.headerHeight, //自定义header高度
+              lineHeight: `${this.props.headerHeight}px`,
+              padding: 0,
+              overflow: 'hidden',
+              textAlign: 'center'
+            }}>
+            {this.props.logo && this.props.logo(this.state.collapsed)}
+          </div>
+
+          {/* 导航栏 */}
           <div
             id="menu-scroll-xq"
-            style={{ height: 'calc(100% - 64px)', position: 'relative' }}>
+            style={{
+              height: `calc(100% - ${this.props.headerHeight}px)`,
+              position: 'relative'
+            }}>
             <Menu
               className="sider-menu-xq"
               mode="inline"
@@ -111,42 +128,79 @@ export default class MenuRoot extends React.Component<Props> {
               {this.renderMenu(this.props.menu)}
             </Menu>
           </div>
-        </Sider>
+        </div>
 
-        <Layout>
-          <Header
+        <div style={{
+          width: `calc(100% - ${this.state.siderWidth}px)`,
+          height: '100%',
+          float: 'left'
+        }}>
+          <div
             className="layout-header-xq"
-            style={{ padding: 0 }}>
+            style={{
+              height: this.props.headerHeight,
+              padding: 0,
+              background: '#001529',
+            }}>
             {/* 控制导航栏收缩 */}
-            <div style={{ display: 'inline-block', width: 30, verticalAlign: 'top' }}>
+            <div style={{
+              display: 'inline-block',
+              width: 30,
+              lineHeight: `${this.props.headerHeight}px`,
+              verticalAlign: 'top'
+            }}>
               <Icon
                 className="trigger-xq"
-                style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
+                style={{
+                  fontSize: 20,
+                  color: '#fff',
+                  cursor: 'pointer'
+                }}
                 type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={this.handelToggle.bind(this)} />
             </div>
 
             {/* 自定义header部分 */}
-            <div style={{ display: 'inline-block', width: 'calc(100% - 80px)', height: '100%', overflow: 'hidden' }}>
-              {this.props.header}
+            <div style={{
+              display: 'inline-block',
+              width: 'calc(100% - 80px)',
+              height: '100%',
+              overflow: 'hidden'
+            }}>
+              {this.props.headerComponent}
             </div>
 
             {/* 退出登录 */}
-            <div style={{ display: 'inline-block', width: 50, height: '100%', overflow: 'hidden' }}>
-              <Tooltip title="退出登录">
-                <Icon
-                  style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
-                  type="poweroff"
-                  onClick={this.handleLogOut.bind(this)} />
-              </Tooltip>
+            <div style={{
+              display: 'inline-block',
+              width: 50,
+              height: '100%',
+              lineHeight: `${this.props.headerHeight}px`,
+              overflow: 'hidden'
+            }}>
+              {
+                this.props.logout && (
+                  <Tooltip title="退出登录">
+                    <Icon
+                      style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
+                      type="poweroff"
+                      onClick={this.handleLogOut.bind(this)} />
+                  </Tooltip>
+                )
+              }
             </div>
-          </Header>
+          </div>
 
           {/* 页面主体内容 */}
           <div
             id="layout-content-xq"
             className="layout-content-xq"
-            style={{ position: 'relative', padding: 10, background: '#ddd', height: 'calc(100% - 64px)' }}>
+            style={{
+              height: `calc(100% - ${this.props.headerHeight}px)`,
+              position: 'relative',
+              padding: 10,
+              background: '#ddd'
+            }}>
             {/* 面包屑 */}
             <div
               className="breadcrumb-xq"
@@ -164,8 +218,8 @@ export default class MenuRoot extends React.Component<Props> {
               )
             }
           </div>
-        </Layout>
-      </Layout>
+        </div>
+      </div>
     );
   }
 
@@ -188,16 +242,18 @@ export default class MenuRoot extends React.Component<Props> {
   }
 
   handelToggle() {
-    this.props.setCollapsed(!this.state.collapsed); //设置导航栏是否展开
+    let nextBool = !this.state.collapsed;
+    this.props.setCollapsed(nextBool); //设置导航栏是否展开
     this.setState({
-      collapsed: !this.state.collapsed,
-      openKeys: !this.state.collapsed ? [] : this.props.openKeys
+      collapsed: nextBool,
+      openKeys: nextBool ? [] : this.props.openKeys,
+      siderWidth: nextBool ? 80 : 200
     });
   }
 
   handleLogOut() {
     this.props.setAuthInfo([]);
-    history.push('/login');
+
     this.props.logout && this.props.logout(); //退出登录的回调函数
   }
 

@@ -7,7 +7,8 @@ import MenuRoot from './menuRoot';
 
 interface Props {
   logo?: (collapsed: boolean) => JSX.Element,
-  header?: JSX.Element,
+  headerHeight?: number,
+  headerComponent?: JSX.Element,
   logout?: () => void
 }
 interface State {
@@ -17,6 +18,9 @@ interface State {
 
 export default class App extends React.Component<Props> {
   state: State
+  static defaultProps = {
+    headerHeight: 64
+  }
 
   constructor(props) {
     super(props);
@@ -76,11 +80,11 @@ export default class App extends React.Component<Props> {
                   key={item.path}
                   path={item.path}
                   render={
-                    props => {
+                    routeProps => {
                       const C = item.component;
 
                       return (
-                        <C {...props} setAuthInfo={this.setAuthInfo.bind(this)} />
+                        <C {...routeProps} setAuthInfo={this.setAuthInfo.bind(this)} />
                       );
                     }
                   } />
@@ -102,13 +106,13 @@ export default class App extends React.Component<Props> {
                   key={item.path}
                   path={item.path}
                   render={
-                    props => {
+                    routeProps => {
                       const C = item.component; //页面
 
                       return (
                         <MenuRoot
                           {...this.props}
-                          {...props}
+                          {...routeProps}
                           collapsed={this.state.collapsed}
                           setCollapsed={this.setCollapsed.bind(this)}
                           setAuthInfo={this.setAuthInfo.bind(this)}
@@ -117,7 +121,7 @@ export default class App extends React.Component<Props> {
                           openKeys={[item.parent]}
                           selectedKeys={[item.path]}>
                           <C
-                            {...props}
+                            {...routeProps}
                             setAuthInfo={this.setAuthInfo.bind(this)} />
                         </MenuRoot>
                       );
@@ -128,10 +132,10 @@ export default class App extends React.Component<Props> {
           }
           <Route
             render={
-              props => {
+              routeProps => {
                 let Error = errRouter[0].component;
                 return (
-                  <Error {...props} />
+                  <Error {...routeProps} />
                 );
               }
             } />

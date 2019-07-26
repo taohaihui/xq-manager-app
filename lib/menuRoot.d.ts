@@ -15,14 +15,16 @@ interface Props {
     setAuthInfo: (authInfo: []) => void;
     logo?: (collapsed: boolean) => JSX.Element;
     logout?: () => void;
-    header?: JSX.Element;
+    headerHeight?: number;
+    headerComponent?: JSX.Element;
     children?: any;
 }
 interface State {
     openKeys: string[];
     selectedKeys: string[];
     collapsed: boolean;
-    breadcrumb?: any[];
+    breadcrumb: any[];
+    siderWidth: number;
 }
 export default class MenuRoot extends React.Component<Props> {
     state: State;
