@@ -10,7 +10,8 @@ interface Props {
   headerHeight?: number,
   headerComponent?: JSX.Element,
   logout?: () => void,
-  navType?: string
+  navType?: string,
+  tabNum?: number
 }
 interface State {
   authInfo: any[],
@@ -24,6 +25,7 @@ export default class App extends React.Component<Props> {
   static defaultProps = {
     headerHeight: 64,
     navType: 'breadcrumb', //默认面包屑,可选tab形式
+    tabNum: 10,
   }
 
   constructor(props) {
@@ -186,6 +188,19 @@ export default class App extends React.Component<Props> {
 
   // 设置面包屑数据
   setBreadcrumb(nextBreadcrumb, tabActiveKey) {
+    if (this.props.navType === 'tab' && nextBreadcrumb.length > this.props.tabNum) {
+      let index = 0;
+
+      for (let i = 0; i < nextBreadcrumb.length; i++) {
+        console.log(nextBreadcrumb[i].closable !== false)
+        if (nextBreadcrumb[i].closable !== false) {
+          index = i;
+          break;
+        }
+      }
+      nextBreadcrumb.splice(index, nextBreadcrumb.length - this.props.tabNum);
+    }
+
     this.setState({
       breadcrumb: nextBreadcrumb,
       tabActiveKey

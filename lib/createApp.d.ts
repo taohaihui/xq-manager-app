@@ -5,6 +5,7 @@ interface Props {
     headerComponent?: JSX.Element;
     logout?: () => void;
     navType?: string;
+    tabNum?: number;
 }
 interface State {
     authInfo: any[];
@@ -21,6 +22,7 @@ export default class App extends React.Component<Props> {
     static defaultProps: {
         headerHeight: number;
         navType: string;
+        tabNum: number;
     };
     constructor(props: any);
     static setSession(name: any, value: any): void;

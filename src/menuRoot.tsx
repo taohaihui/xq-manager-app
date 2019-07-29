@@ -83,7 +83,7 @@ export default class MenuRoot extends React.Component<Props> {
 
   render() {
     this.pathData = []; //每次重新渲染前清空path数据
-    console.log(this.props)
+
     return (
       <div
         className="layout-wrap-xq"
@@ -372,14 +372,12 @@ export default class MenuRoot extends React.Component<Props> {
 
   // tab跳转
   handleTabs(path) {
-    console.log(path)
     history.push(path);
     this.props.setBreadcrumb(this.props.breadcrumb, path);
   }
 
   // 删除tab
   handleDelete(key) {
-    console.log(key)
     let nextBreadcrumb = [];
     let activeKey = '';
 

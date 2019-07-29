@@ -124,6 +124,7 @@ npm install xq-manager-app --dev
   * logo 自定义logo部分,该函数会传入一个布尔值，代码左侧导航栏的收缩状态
   * navType tab式的面包屑 tab | breadcrumb
   * logout 退出登录的回调
+  * tabNum 最多显示多少个标签
 
 ### 3、路由跳转
 * 使用props的history
