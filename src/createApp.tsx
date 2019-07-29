@@ -32,8 +32,8 @@ export default class App extends React.Component<Props> {
     this.state = {
       authInfo: [], // 当前应用的权限信息
       collapsed: false,
-      breadcrumb: [], // 面包屑
-      tabActiveKey: '' //活动标签
+      breadcrumb: this.props.navType === 'tab' ? App.getSession('breadcrumb') || [] : [], // 面包屑
+      tabActiveKey: App.getSession('tabActiveKey') || '' //活动标签
     };
   };
 
