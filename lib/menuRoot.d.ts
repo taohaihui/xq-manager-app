@@ -12,7 +12,15 @@ interface Props {
     location: {
         state: boolean;
     };
+    breadcrumb: {
+        path: string;
+        name: string;
+        closable: boolean;
+    }[];
+    activekey: string;
+    setBreadcrumb: ([]: any[], string: any) => void;
     setAuthInfo: (authInfo: []) => void;
+    navType?: string;
     logo?: (collapsed: boolean) => JSX.Element;
     logout?: () => void;
     headerHeight?: number;
@@ -23,11 +31,14 @@ interface State {
     openKeys: string[];
     selectedKeys: string[];
     collapsed: boolean;
-    breadcrumb: any[];
     siderWidth: number;
 }
 export default class MenuRoot extends React.Component<Props> {
     state: State;
+    pathData: {
+        path: string;
+        name: string;
+    }[];
     menuScroll: PerfectScrollbar;
     contentScroll: PerfectScrollbar;
     constructor(props: any);
@@ -38,9 +49,17 @@ export default class MenuRoot extends React.Component<Props> {
     handleOpen(openKeys: any): void;
     handleMenu(params: any): void;
     setBreadcrumb(breadcrumb: any): void;
+    filterBreadcrumb(breadcrumb: any): {
+        path: string;
+        name: string;
+        closable: boolean;
+    }[];
     handelToggle(): void;
     handleLogOut(): void;
+    renderTabs(): JSX.Element;
     renderBreadcrumb(): JSX.Element;
+    handleTabs(path: any): void;
+    handleDelete(key: any): void;
     handleBreadcrumb(path: any, e: any): void;
     renderMenu(menu: any[]): JSX.Element[];
 }

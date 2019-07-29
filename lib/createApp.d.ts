@@ -4,15 +4,23 @@ interface Props {
     headerHeight?: number;
     headerComponent?: JSX.Element;
     logout?: () => void;
+    navType?: string;
 }
 interface State {
     authInfo: any[];
     collapsed: boolean;
+    breadcrumb: {
+        path: string;
+        name: string;
+        closable: boolean;
+    }[];
+    tabActiveKey: string;
 }
 export default class App extends React.Component<Props> {
     state: State;
     static defaultProps: {
         headerHeight: number;
+        navType: string;
     };
     constructor(props: any);
     static setSession(name: any, value: any): void;
@@ -21,6 +29,8 @@ export default class App extends React.Component<Props> {
     render(): JSX.Element;
     getAuthInfo(): void;
     setAuthInfo(authInfo: any): void;
+    getBreadcrumb(): void;
+    setBreadcrumb(nextBreadcrumb: any, tabActiveKey: any): void;
     setCollapsed(bool: any): void;
     getAuth(auth: string): boolean;
 }

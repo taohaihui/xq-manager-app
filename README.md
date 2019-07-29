@@ -119,8 +119,11 @@ npm install xq-manager-app --dev
   ```
 
 * App 组件props说明
-  * header 自定义header部分
+  * headerHeight 自定义header的高度
+  * headerComponent 自定义header部分，传入一个react组件
   * logo 自定义logo部分,该函数会传入一个布尔值，代码左侧导航栏的收缩状态
+  * navType tab式的面包屑 tab | breadcrumb
+  * logout 退出登录的回调
 
 ### 3、路由跳转
 * 使用props的history

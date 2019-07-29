@@ -9,17 +9,21 @@ interface Props {
   logo?: (collapsed: boolean) => JSX.Element,
   headerHeight?: number,
   headerComponent?: JSX.Element,
-  logout?: () => void
+  logout?: () => void,
+  navType?: string
 }
 interface State {
   authInfo: any[],
-  collapsed: boolean
+  collapsed: boolean,
+  breadcrumb: { path: string, name: string, closable: boolean }[],
+  tabActiveKey: string
 }
 
 export default class App extends React.Component<Props> {
   state: State
   static defaultProps = {
-    headerHeight: 64
+    headerHeight: 64,
+    navType: 'breadcrumb', //默认面包屑,可选tab形式
   }
 
   constructor(props) {
@@ -27,7 +31,9 @@ export default class App extends React.Component<Props> {
 
     this.state = {
       authInfo: [], // 当前应用的权限信息
-      collapsed: false
+      collapsed: false,
+      breadcrumb: [], // 面包屑
+      tabActiveKey: '' //活动标签
     };
   };
 
@@ -59,6 +65,7 @@ export default class App extends React.Component<Props> {
 
   componentDidMount() {
     this.getAuthInfo();
+    this.getBreadcrumb();
   }
 
   render() {
@@ -113,7 +120,10 @@ export default class App extends React.Component<Props> {
                         <MenuRoot
                           {...this.props}
                           {...routeProps}
+                          breadcrumb={this.state.breadcrumb}
                           collapsed={this.state.collapsed}
+                          setBreadcrumb={this.setBreadcrumb.bind(this)}
+                          activekey={this.state.tabActiveKey}
                           setCollapsed={this.setCollapsed.bind(this)}
                           setAuthInfo={this.setAuthInfo.bind(this)}
                           getAuth={this.getAuth.bind(this)}
@@ -157,6 +167,34 @@ export default class App extends React.Component<Props> {
   setAuthInfo(authInfo) {
     this.setState({ authInfo });
     App.setSession('authInfo-from-user', authInfo); //缓存权限信息
+  }
+
+  // 从缓存获取tab形式的面包屑数据
+  getBreadcrumb() {
+    if (this.props.navType === 'tab') {
+      let breadcrumb = App.getSession('breadcrumb');
+      let tabActiveKey = App.getSession('tabActiveKey');
+
+      if (breadcrumb && tabActiveKey) {
+        this.setState({
+          breadcrumb,
+          tabActiveKey
+        });
+      }
+    }
+  }
+
+  // 设置面包屑数据
+  setBreadcrumb(nextBreadcrumb, tabActiveKey) {
+    this.setState({
+      breadcrumb: nextBreadcrumb,
+      tabActiveKey
+    });
+
+    if (this.props.navType === 'tab') {
+      App.setSession('breadcrumb', nextBreadcrumb); //缓存tab形式的面包屑
+      App.setSession('tabActiveKey', tabActiveKey); //缓存tab key
+    }
   }
 
   // 设置导航栏是否展开,切换导航后保持一致

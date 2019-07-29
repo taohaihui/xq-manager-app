@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { Layout, Menu, Icon, Tooltip, Breadcrumb } from 'antd';
+import { Layout, Menu, Icon, Tooltip, Breadcrumb, Tabs } from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import history from './history';
 
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
-
-const { Header, Sider } = Layout;
 
 interface Props {
   openKeys: string[],
@@ -18,7 +16,11 @@ interface Props {
   location: {
     state: boolean
   },
+  breadcrumb: { path: string, name: string, closable: boolean }[],
+  activekey: string,
+  setBreadcrumb: ([], string) => void,
   setAuthInfo: (authInfo: []) => void,
+  navType?: string,
   logo?: (collapsed: boolean) => JSX.Element,
   logout?: () => void,
   headerHeight?: number,
@@ -30,12 +32,12 @@ interface State {
   openKeys: string[],
   selectedKeys: string[],
   collapsed: boolean,
-  breadcrumb: any[],
   siderWidth: number
 }
 
 export default class MenuRoot extends React.Component<Props> {
   state: State
+  pathData: { path: string, name: string }[]
   menuScroll: PerfectScrollbar
   contentScroll: PerfectScrollbar
 
@@ -46,9 +48,10 @@ export default class MenuRoot extends React.Component<Props> {
       openKeys: this.props.openKeys,
       selectedKeys: this.props.selectedKeys,
       collapsed: this.props.collapsed, // 侧边栏的收缩状态
-      breadcrumb: [], // 面包屑
       siderWidth: 200
     };
+
+    this.pathData = []; //存储所有可跳转路径
   }
 
   componentDidMount() {
@@ -79,6 +82,8 @@ export default class MenuRoot extends React.Component<Props> {
   }
 
   render() {
+    this.pathData = []; //每次重新渲染前清空path数据
+    console.log(this.props)
     return (
       <div
         className="layout-wrap-xq"
@@ -171,52 +176,63 @@ export default class MenuRoot extends React.Component<Props> {
             </div>
 
             {/* 退出登录 */}
-            <div style={{
-              display: 'inline-block',
-              width: 50,
-              height: '100%',
-              lineHeight: `${this.props.headerHeight}px`,
-              overflow: 'hidden'
-            }}>
+            <div
+              className="logout-btn-xq"
+              style={{
+                display: 'inline-block',
+                width: 50,
+                height: '100%',
+                lineHeight: `${this.props.headerHeight}px`,
+                overflow: 'hidden'
+              }}>
               {
-                this.props.logout && (
-                  <Tooltip title="退出登录">
-                    <Icon
-                      style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
-                      type="poweroff"
-                      onClick={this.handleLogOut.bind(this)} />
-                  </Tooltip>
-                )
+                <Tooltip title="退出登录">
+                  <Icon
+                    style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
+                    type="poweroff"
+                    onClick={this.handleLogOut.bind(this)} />
+                </Tooltip>
               }
             </div>
           </div>
 
           {/* 页面主体内容 */}
           <div
-            id="layout-content-xq"
             className="layout-content-xq"
             style={{
               height: `calc(100% - ${this.props.headerHeight}px)`,
-              position: 'relative',
               padding: 10,
-              background: '#ddd'
+              background: '#ddd',
+              overflow: 'hidden'
             }}>
             {/* 面包屑 */}
             <div
-              className="breadcrumb-xq"
-              style={{ padding: '0 0 10px 0' }}>
+              style={{ height: 40 }}
+              className="breadcrumb-xq">
               {
-                this.state.breadcrumb.length > 0 && this.renderBreadcrumb()
+                this.props.navType === 'tab' && this.renderTabs()
+              }
+              {
+                this.props.navType === 'breadcrumb' && this.renderBreadcrumb()
               }
             </div>
 
             {/* 注入设置面包屑的接口 */}
-            {
-              React.cloneElement(
-                this.props.children,
-                { setBreadcrumb: this.setBreadcrumb.bind(this) }
-              )
-            }
+            <div
+              id="layout-content-xq"
+              style={{
+                height: 'calc(100% - 40px)',
+                background: '#fff',
+                position: 'relative',
+                overflow: 'auto'
+              }}>
+              {
+                React.cloneElement(
+                  this.props.children,
+                  { setBreadcrumb: this.setBreadcrumb.bind(this) }
+                )
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -230,15 +246,53 @@ export default class MenuRoot extends React.Component<Props> {
   }
 
   handleMenu(params) {
-    // this.setState({
-    //   selectedKeys: params.selectedKeys
-    // });
     history.push(params.key);
+
+    let breadcrumb = [];
+    this.pathData.forEach(item => {
+      if (item.path === params.key) {
+        breadcrumb.push({ ...item });
+      }
+    });
+
+    this.setBreadcrumb(breadcrumb);
   }
 
   // 设置面包屑参数
   setBreadcrumb(breadcrumb) {
-    this.setState({ breadcrumb });
+    let nextBreadcrumb = breadcrumb;
+    let activekey = '';
+
+    if (this.props.navType === 'tab') {
+      nextBreadcrumb = this.filterBreadcrumb(breadcrumb);
+      activekey = breadcrumb[breadcrumb.length - 1].path;
+    }
+    // if (this.props.navType === 'breadcrumb') {
+    //   this.setState({ nextBreadcrumb });
+    // }
+
+    this.props.setBreadcrumb(nextBreadcrumb, activekey);
+  }
+
+  // 处理面包屑参数
+  filterBreadcrumb(breadcrumb) {
+    let nextBreadcrumb = [...this.props.breadcrumb];
+
+    breadcrumb.forEach(item => {
+      let isHave = false;
+
+      this.props.breadcrumb.forEach(item2 => {
+        if (item.path === item2.path) {
+          isHave = true; //已经有存在的tab
+        }
+      });
+
+      if (!isHave) {
+        nextBreadcrumb.push(item);
+      }
+    });
+
+    return nextBreadcrumb;
   }
 
   handelToggle() {
@@ -253,17 +307,48 @@ export default class MenuRoot extends React.Component<Props> {
 
   handleLogOut() {
     this.props.setAuthInfo([]);
+    this.props.setBreadcrumb([], '');
 
     this.props.logout && this.props.logout(); //退出登录的回调函数
   }
 
+  // 渲染tab式的面包屑
+  renderTabs() {
+    return (
+      <Tabs
+        hideAdd
+        activeKey={this.props.activekey}
+        tabBarStyle={{
+          margin: 0
+        }}
+        type="editable-card"
+        onTabClick={this.handleTabs.bind(this)}
+        onEdit={this.handleDelete.bind(this)}>
+        {
+          this.props.breadcrumb.map(item => {
+            return (
+              <Tabs.TabPane
+                closable={true && item.closable}
+                tab={item.name}
+                key={item.path} />
+            );
+          })
+        }
+      </Tabs>
+    );
+  }
+
   // 渲染面包屑
   renderBreadcrumb() {
-    let len = this.state.breadcrumb.length;
+    if (this.props.breadcrumb.length === 0) {
+      return null;
+    }
+
+    let len = this.props.breadcrumb.length;
     return (
       <Breadcrumb>
         {
-          this.state.breadcrumb.map((item, index) => {
+          this.props.breadcrumb.map((item, index) => {
             return (
               <Breadcrumb.Item key={index}>
                 {
@@ -285,9 +370,50 @@ export default class MenuRoot extends React.Component<Props> {
     );
   }
 
+  // tab跳转
+  handleTabs(path) {
+    console.log(path)
+    history.push(path);
+    this.props.setBreadcrumb(this.props.breadcrumb, path);
+  }
+
+  // 删除tab
+  handleDelete(key) {
+    console.log(key)
+    let nextBreadcrumb = [];
+    let activeKey = '';
+
+    // 至少两个tab才能删除一个
+    if (this.props.breadcrumb.length <= 1) {
+      return;
+    }
+
+    this.props.breadcrumb.forEach((item, index) => {
+      if (item.path !== key) {
+        nextBreadcrumb.push({ ...item });
+      }
+
+      if (item.path === key && nextBreadcrumb.length > 0) {
+        activeKey = nextBreadcrumb[nextBreadcrumb.length - 1].path;
+      }
+
+      if (item.path === key && nextBreadcrumb.length === 0) {
+        activeKey = this.props.breadcrumb[index + 1].path;
+      }
+    });
+
+    if (key !== this.props.activekey) {
+      activeKey = this.props.activekey;
+    }
+
+    history.push(activeKey);
+    this.props.setBreadcrumb(nextBreadcrumb, activeKey);
+  }
+
   // 面包屑跳转
   handleBreadcrumb(path, e) {
     e.preventDefault();
+
     history.push(path);
   }
 
@@ -316,12 +442,17 @@ export default class MenuRoot extends React.Component<Props> {
         );
       }
 
+      this.pathData.push({
+        path: item.key,
+        name: item.title
+      });
+
       return (
         <Menu.Item key={item.key}>
           {item.icon && <Icon type={item.icon} />}
           <span>{item.title}</span>
         </Menu.Item>
-      )
+      );
     });
 
     return router;
