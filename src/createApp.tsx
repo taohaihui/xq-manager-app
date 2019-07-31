@@ -65,6 +65,15 @@ export default class App extends React.Component<Props> {
     return null;
   }
 
+  static clear() {
+    if (typeof sessionStorage === 'object') {
+      sessionStorage.clear();
+    }
+    if (typeof localStorage === 'object') {
+      localStorage.clear();
+    }
+  }
+
   componentDidMount() {
     this.getAuthInfo();
     this.getBreadcrumb();
@@ -117,7 +126,7 @@ export default class App extends React.Component<Props> {
                   render={
                     routeProps => {
                       const C = item.component; //页面
-
+                      console.log(this.state.collapsed)
                       return (
                         <MenuRoot
                           {...this.props}
@@ -192,7 +201,6 @@ export default class App extends React.Component<Props> {
       let index = 0;
 
       for (let i = 0; i < nextBreadcrumb.length; i++) {
-        console.log(nextBreadcrumb[i].closable !== false)
         if (nextBreadcrumb[i].closable !== false) {
           index = i;
           break;

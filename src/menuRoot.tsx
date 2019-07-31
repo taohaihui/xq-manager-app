@@ -48,7 +48,7 @@ export default class MenuRoot extends React.Component<Props> {
       openKeys: this.props.openKeys,
       selectedKeys: this.props.selectedKeys,
       collapsed: this.props.collapsed, // 侧边栏的收缩状态
-      siderWidth: 200
+      siderWidth: this.props.collapsed ? 80 : 200
     };
 
     this.pathData = []; //存储所有可跳转路径
@@ -146,14 +146,20 @@ export default class MenuRoot extends React.Component<Props> {
               height: this.props.headerHeight,
               padding: 0,
               background: '#001529',
+              position: 'relative'
             }}>
             {/* 控制导航栏收缩 */}
-            <div style={{
-              display: 'inline-block',
-              width: 30,
-              lineHeight: `${this.props.headerHeight}px`,
-              verticalAlign: 'top'
-            }}>
+            <div
+              className="collapsed-btn-xq"
+              style={{
+                width: 30,
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                textAlign: 'center',
+                lineHeight: `${this.props.headerHeight}px`,
+                // verticalAlign: 'top'
+              }}>
               <Icon
                 className="trigger-xq"
                 style={{
@@ -167,10 +173,9 @@ export default class MenuRoot extends React.Component<Props> {
 
             {/* 自定义header部分 */}
             <div style={{
-              display: 'inline-block',
-              width: 'calc(100% - 80px)',
+              width: '100%',
               height: '100%',
-              overflow: 'hidden'
+              padding: '0 30px'
             }}>
               {this.props.headerComponent}
             </div>
@@ -179,16 +184,18 @@ export default class MenuRoot extends React.Component<Props> {
             <div
               className="logout-btn-xq"
               style={{
-                display: 'inline-block',
-                width: 50,
+                width: 30,
                 height: '100%',
+                position: 'absolute',
+                right: 0,
+                top: 0,
                 lineHeight: `${this.props.headerHeight}px`,
-                overflow: 'hidden'
+                // overflow: 'hidden'
               }}>
               {
                 <Tooltip title="退出登录">
                   <Icon
-                    style={{ fontSize: 20, color: '#fff', cursor: 'pointer' }}
+                    style={{ fontSize: 16, color: '#fff', cursor: 'pointer' }}
                     type="poweroff"
                     onClick={this.handleLogOut.bind(this)} />
                 </Tooltip>

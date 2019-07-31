@@ -27,6 +27,7 @@ export default class App extends React.Component<Props> {
     constructor(props: any);
     static setSession(name: any, value: any): void;
     static getSession(name: any): any;
+    static clear(): void;
     componentDidMount(): void;
     render(): JSX.Element;
     getAuthInfo(): void;
