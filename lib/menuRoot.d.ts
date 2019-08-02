@@ -22,7 +22,6 @@ interface Props {
     setAuthInfo: (authInfo: []) => void;
     navType?: string;
     logo?: (collapsed: boolean) => JSX.Element;
-    logout?: () => void;
     headerHeight?: number;
     headerComponent?: JSX.Element;
     children?: any;
@@ -55,7 +54,6 @@ export default class MenuRoot extends React.Component<Props> {
         closable: boolean;
     }[];
     handelToggle(): void;
-    handleLogOut(): void;
     renderTabs(): JSX.Element;
     renderBreadcrumb(): JSX.Element;
     handleTabs(path: any): void;

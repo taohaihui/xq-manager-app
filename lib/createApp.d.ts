@@ -3,7 +3,6 @@ interface Props {
     logo?: (collapsed: boolean) => JSX.Element;
     headerHeight?: number;
     headerComponent?: JSX.Element;
-    logout?: () => void;
     navType?: string;
     tabNum?: number;
 }

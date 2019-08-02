@@ -933,7 +933,7 @@ rc-menu@^7.3.0, rc-menu@~7.4.12:
     rc-util "^4.1.0"
     resize-observer-polyfill "^1.5.0"
 
-rc-notification@~3.3.0:
+rc-notification@^3.3.1, rc-notification@~3.3.0:
   version "3.3.1"
   resolved "http://npm.dev.78dk.com/rc-notification/-/rc-notification-3.3.1.tgz#0baa3e70f8d40ab015ce8fa78c260c490fc7beb4"
   integrity sha1-C6o+cPjUCrAVzo+njCYMSQ/HvrQ=

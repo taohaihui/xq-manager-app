@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Layout, Menu, Icon, Tooltip, Breadcrumb, Tabs } from 'antd';
+import { Menu, Icon, Breadcrumb, Tabs } from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import history from './history';
 
@@ -22,7 +22,6 @@ interface Props {
   setAuthInfo: (authInfo: []) => void,
   navType?: string,
   logo?: (collapsed: boolean) => JSX.Element,
-  logout?: () => void,
   headerHeight?: number,
   headerComponent?: JSX.Element,
   children?: any
@@ -175,31 +174,9 @@ export default class MenuRoot extends React.Component<Props> {
             <div style={{
               width: '100%',
               height: '100%',
-              padding: '0 30px'
+              paddingLeft: 30
             }}>
               {this.props.headerComponent}
-            </div>
-
-            {/* 退出登录 */}
-            <div
-              className="logout-btn-xq"
-              style={{
-                width: 30,
-                height: '100%',
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                lineHeight: `${this.props.headerHeight}px`,
-                // overflow: 'hidden'
-              }}>
-              {
-                <Tooltip title="退出登录">
-                  <Icon
-                    style={{ fontSize: 16, color: '#fff', cursor: 'pointer' }}
-                    type="poweroff"
-                    onClick={this.handleLogOut.bind(this)} />
-                </Tooltip>
-              }
             </div>
           </div>
 
@@ -310,13 +287,6 @@ export default class MenuRoot extends React.Component<Props> {
       openKeys: nextBool ? [] : this.props.openKeys,
       siderWidth: nextBool ? 80 : 200
     });
-  }
-
-  handleLogOut() {
-    this.props.setAuthInfo([]);
-    this.props.setBreadcrumb([], '');
-
-    this.props.logout && this.props.logout(); //退出登录的回调函数
   }
 
   // 渲染tab式的面包屑

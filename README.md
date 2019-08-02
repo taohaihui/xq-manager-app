@@ -166,3 +166,12 @@ npm install xq-manager-app --dev
 
     this.props.setBreadcrumb(arr);
   ```
+
+### 6、加载全局loading
+```js
+import {Spin} from 'xq-manager-app';
+
+Spin.spin(); //显示loading，可以加载多次
+Spin.removeSpin();  //删除一个loading
+Spin.removeSpin(true); //删除全部loading
+```
