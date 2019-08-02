@@ -125,7 +125,7 @@ export default class App extends React.Component<Props> {
                   render={
                     routeProps => {
                       const C = item.component; //页面
-                      console.log(this.state.collapsed)
+
                       return (
                         <MenuRoot
                           {...this.props}

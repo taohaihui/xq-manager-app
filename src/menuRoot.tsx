@@ -5,6 +5,7 @@ import history from './history';
 
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
+import { relative } from 'path';
 
 interface Props {
   openKeys: string[],
@@ -184,6 +185,7 @@ export default class MenuRoot extends React.Component<Props> {
           <div
             className="layout-content-xq"
             style={{
+              width: '100%',
               height: `calc(100% - ${this.props.headerHeight}px)`,
               padding: 10,
               background: '#ddd',
@@ -205,17 +207,22 @@ export default class MenuRoot extends React.Component<Props> {
             <div
               id="layout-content-xq"
               style={{
+                width: '100%',
                 height: 'calc(100% - 40px)',
                 background: '#fff',
                 position: 'relative',
                 overflow: 'auto'
               }}>
-              {
-                React.cloneElement(
-                  this.props.children,
-                  { setBreadcrumb: this.setBreadcrumb.bind(this) }
-                )
-              }
+              <div style={{ minWidth: 1180 }}>
+                {
+                  React.cloneElement(
+                    this.props.children,
+                    {
+                      setBreadcrumb: this.setBreadcrumb.bind(this)
+                    }
+                  )
+                }
+              </div>
             </div>
           </div>
         </div>
