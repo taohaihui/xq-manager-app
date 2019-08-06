@@ -155,16 +155,21 @@ npm install xq-manager-app --dev
   ```
 
 
-### 5、设置面包屑
+### 5、设置、删除面包屑
   ```js
   // app.config.json文件中menu字段配置的页面都会接收该函数
+  
   let arr = [
       { name: '面包屑名称1' },
       { path: '/b/b?a=1&b=2', name: '模块b' },
       { path: '/a/a', name: '面包屑名称2' }
     ];
 
-    this.props.setBreadcrumb(arr);
+  this.props.setBreadcrumb(arr);
+
+  // 删除面包屑，仅 <App navType="tab"/> 可用
+  this.props.setBreadcrumb([{path:'/a/b?id=123', name:'模块b'}]);
+  this.props.deleteBreadcrumb(['/a/b?id=123']);
   ```
 
 ### 6、加载全局loading

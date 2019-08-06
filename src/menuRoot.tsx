@@ -5,7 +5,6 @@ import history from './history';
 
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
-import { relative } from 'path';
 
 interface Props {
   openKeys: string[],
@@ -19,7 +18,7 @@ interface Props {
   },
   breadcrumb: { path: string, name: string, closable: boolean }[],
   activekey: string,
-  setBreadcrumb: ([], string) => void,
+  setBreadcrumb: ([], string?) => void,
   setAuthInfo: (authInfo: []) => void,
   navType?: string,
   logo?: (collapsed: boolean) => JSX.Element,
@@ -60,6 +59,15 @@ export default class MenuRoot extends React.Component<Props> {
       this.contentScroll = new PerfectScrollbar(document.getElementById('layout-content-xq'));
     } catch (err) {
       // IE9不支持 PerfectScrollbar
+    }
+
+    window.onresize = () => {
+      try {
+        this.menuScroll.update();
+        this.contentScroll.update();
+      } catch (err) {
+        // IE9不支持 PerfectScrollbar
+      }
     }
   }
 
@@ -175,7 +183,8 @@ export default class MenuRoot extends React.Component<Props> {
             <div style={{
               width: '100%',
               height: '100%',
-              paddingLeft: 30
+              paddingLeft: 30,
+              overflow: 'hidden'
             }}>
               {this.props.headerComponent}
             </div>
@@ -188,7 +197,7 @@ export default class MenuRoot extends React.Component<Props> {
               width: '100%',
               height: `calc(100% - ${this.props.headerHeight}px)`,
               padding: 10,
-              background: '#ddd',
+              background: '#eee',
               overflow: 'hidden'
             }}>
             {/* 面包屑 */}
@@ -218,7 +227,8 @@ export default class MenuRoot extends React.Component<Props> {
                   React.cloneElement(
                     this.props.children,
                     {
-                      setBreadcrumb: this.setBreadcrumb.bind(this)
+                      setBreadcrumb: this.setBreadcrumb.bind(this),
+                      deleteBreadcrumb: this.deleteBreadcrumb.bind(this),
                     }
                   )
                 }
@@ -247,6 +257,23 @@ export default class MenuRoot extends React.Component<Props> {
     });
 
     this.setBreadcrumb(breadcrumb);
+  }
+
+  // 删除面包屑参数
+  deleteBreadcrumb(deleteKeys = []) {
+    if (this.props.navType === 'tab') {
+      let nextBreadcrumb = [];
+
+      deleteKeys.forEach(path => {
+        this.props.breadcrumb.forEach(item => {
+          if (item.path !== path) {
+            nextBreadcrumb.push(item);
+          }
+        });
+      });
+
+      this.props.setBreadcrumb(nextBreadcrumb);
+    }
   }
 
   // 设置面包屑参数

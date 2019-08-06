@@ -18,7 +18,7 @@ interface Props {
         closable: boolean;
     }[];
     activekey: string;
-    setBreadcrumb: ([]: any[], string: any) => void;
+    setBreadcrumb: ([]: any[], string?: any) => void;
     setAuthInfo: (authInfo: []) => void;
     navType?: string;
     logo?: (collapsed: boolean) => JSX.Element;
@@ -47,6 +47,7 @@ export default class MenuRoot extends React.Component<Props> {
     render(): JSX.Element;
     handleOpen(openKeys: any): void;
     handleMenu(params: any): void;
+    deleteBreadcrumb(deleteKeys?: any[]): void;
     setBreadcrumb(breadcrumb: any): void;
     filterBreadcrumb(breadcrumb: any): {
         path: string;

@@ -208,14 +208,22 @@ export default class App extends React.Component<Props> {
       nextBreadcrumb.splice(index, nextBreadcrumb.length - this.props.tabNum);
     }
 
-    this.setState({
-      breadcrumb: nextBreadcrumb,
-      tabActiveKey
-    });
+    if (!tabActiveKey) {
+      this.setState({
+        breadcrumb: nextBreadcrumb
+      });
+    } else {
+      this.setState({
+        breadcrumb: nextBreadcrumb,
+        tabActiveKey
+      });
+    }
 
-    if (this.props.navType === 'tab') {
+    if (this.props.navType === 'tab' && tabActiveKey) {
       App.setSession('breadcrumb', nextBreadcrumb); //缓存tab形式的面包屑
       App.setSession('tabActiveKey', tabActiveKey); //缓存tab key
+    } else {
+      App.setSession('breadcrumb', nextBreadcrumb); //缓存tab形式的面包屑
     }
   }
 
