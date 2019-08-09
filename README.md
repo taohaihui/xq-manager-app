@@ -125,6 +125,7 @@ npm install xq-manager-app --dev
   * navType tab式的面包屑 tab | breadcrumb
   * logout 退出登录的回调
   * tabNum 最多显示多少个标签
+  * historyType 路由类型 borwser | hash
 
 ### 3、路由跳转
 * 使用props的history

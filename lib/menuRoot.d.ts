@@ -20,6 +20,7 @@ interface Props {
     activekey: string;
     setBreadcrumb: ([]: any[], string?: any) => void;
     setAuthInfo: (authInfo: []) => void;
+    historyType: string;
     navType?: string;
     logo?: (collapsed: boolean) => JSX.Element;
     headerHeight?: number;
@@ -40,6 +41,7 @@ export default class MenuRoot extends React.Component<Props> {
     }[];
     menuScroll: PerfectScrollbar;
     contentScroll: PerfectScrollbar;
+    history: any;
     constructor(props: any);
     componentDidMount(): void;
     componentDidUpdate(): void;

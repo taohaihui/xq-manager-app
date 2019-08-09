@@ -1,9 +1,10 @@
 import App from './createApp';
-import history from './history';
+import { historyBrowser, historyHash } from './history';
 import Spin from './spin';
 
 export {
   App,
-  history,
+  historyBrowser,
+  historyHash,
   Spin
 };

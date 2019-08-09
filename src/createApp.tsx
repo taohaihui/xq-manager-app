@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 
-import history from './history';
+import { historyBrowser, historyHash } from './history';
 import { menuRouter, otherRouter, errRouter, appConfig } from './router';
 import MenuRoot from './menuRoot';
 
@@ -10,7 +10,8 @@ interface Props {
   headerHeight?: number,
   headerComponent?: JSX.Element,
   navType?: string,
-  tabNum?: number
+  tabNum?: number,
+  historyType: string
 }
 interface State {
   authInfo: any[],
@@ -25,6 +26,7 @@ export default class App extends React.Component<Props> {
     headerHeight: 64,
     navType: 'breadcrumb', //默认面包屑,可选tab形式
     tabNum: 10,
+    historyType: 'browser' // browser | hash
   }
 
   constructor(props) {
@@ -79,6 +81,8 @@ export default class App extends React.Component<Props> {
   }
 
   render() {
+    const history = this.props.historyType === 'hash' ? historyHash : historyBrowser;
+    
     return (
       <Router history={history}>
         <Switch>

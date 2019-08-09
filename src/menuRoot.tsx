@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Menu, Icon, Breadcrumb, Tabs } from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
-import history from './history';
+import { historyBrowser, historyHash } from './history';
 
 import 'antd/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
@@ -20,6 +20,7 @@ interface Props {
   activekey: string,
   setBreadcrumb: ([], string?) => void,
   setAuthInfo: (authInfo: []) => void,
+  historyType: string,
   navType?: string,
   logo?: (collapsed: boolean) => JSX.Element,
   headerHeight?: number,
@@ -39,6 +40,7 @@ export default class MenuRoot extends React.Component<Props> {
   pathData: { path: string, name: string }[]
   menuScroll: PerfectScrollbar
   contentScroll: PerfectScrollbar
+  history: any
 
   constructor(props) {
     super(props);
@@ -51,6 +53,7 @@ export default class MenuRoot extends React.Component<Props> {
     };
 
     this.pathData = []; //存储所有可跳转路径
+    this.history = this.props.historyType === 'hash' ? historyHash : historyBrowser;
   }
 
   componentDidMount() {
@@ -247,7 +250,7 @@ export default class MenuRoot extends React.Component<Props> {
   }
 
   handleMenu(params) {
-    history.push(params.key);
+    this.history.push(params.key);
 
     let breadcrumb = [];
     this.pathData.forEach(item => {
@@ -383,7 +386,7 @@ export default class MenuRoot extends React.Component<Props> {
 
   // tab跳转
   handleTabs(path) {
-    history.push(path);
+    this.history.push(path);
     this.props.setBreadcrumb(this.props.breadcrumb, path);
   }
 
@@ -415,7 +418,7 @@ export default class MenuRoot extends React.Component<Props> {
       activeKey = this.props.activekey;
     }
 
-    history.push(activeKey);
+    this.history.push(activeKey);
     this.props.setBreadcrumb(nextBreadcrumb, activeKey);
   }
 
@@ -423,7 +426,7 @@ export default class MenuRoot extends React.Component<Props> {
   handleBreadcrumb(path, e) {
     e.preventDefault();
 
-    history.push(path);
+    this.history.push(path);
   }
 
   // 渲染导航列表

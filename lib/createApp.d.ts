@@ -5,6 +5,7 @@ interface Props {
     headerComponent?: JSX.Element;
     navType?: string;
     tabNum?: number;
+    historyType: string;
 }
 interface State {
     authInfo: any[];
@@ -22,6 +23,7 @@ export default class App extends React.Component<Props> {
         headerHeight: number;
         navType: string;
         tabNum: number;
+        historyType: string;
     };
     constructor(props: any);
     static setSession(name: any, value: any): void;
