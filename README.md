@@ -181,3 +181,9 @@ Spin.spin(); //显示loading，可以加载多次
 Spin.removeSpin();  //删除一个loading
 Spin.removeSpin(true); //删除全部loading
 ```
+
+### 7、重置App的state
+```js
+// 只能从配置页面的props中获得
+this.props.resetState();
+```

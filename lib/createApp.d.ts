@@ -32,6 +32,7 @@ export default class App extends React.Component<Props> {
     componentDidMount(): void;
     render(): JSX.Element;
     getAuthInfo(): void;
+    clearState(): void;
     setAuthInfo(authInfo: any): void;
     getBreadcrumb(): void;
     setBreadcrumb(nextBreadcrumb: any, tabActiveKey: any): void;

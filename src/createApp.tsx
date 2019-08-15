@@ -82,7 +82,7 @@ export default class App extends React.Component<Props> {
 
   render() {
     const history = this.props.historyType === 'hash' ? historyHash : historyBrowser;
-    
+
     return (
       <Router history={history}>
         <Switch>
@@ -105,7 +105,10 @@ export default class App extends React.Component<Props> {
                       const C = item.component;
 
                       return (
-                        <C {...routeProps} setAuthInfo={this.setAuthInfo.bind(this)} />
+                        <C
+                          {...routeProps}
+                          resetState={this.clearState.bind(this)}
+                          setAuthInfo={this.setAuthInfo.bind(this)} />
                       );
                     }
                   } />
@@ -146,6 +149,7 @@ export default class App extends React.Component<Props> {
                           selectedKeys={[item.path]}>
                           <C
                             {...routeProps}
+                            resetState={this.clearState.bind(this)}
                             setAuthInfo={this.setAuthInfo.bind(this)} />
                         </MenuRoot>
                       );
@@ -175,6 +179,16 @@ export default class App extends React.Component<Props> {
     if (authInfo) {
       this.setState({ authInfo });
     }
+  }
+
+  // 开放给页面初始化App
+  clearState() {
+    this.setState({
+      authInfo: [],
+      collapsed: false,
+      breadcrumb: [],
+      tabActiveKey: ''
+    });
   }
 
   // 开放给页面设置权限信息的接口
