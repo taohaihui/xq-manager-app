@@ -26,12 +26,20 @@ interface Props {
     headerHeight?: number;
     headerComponent?: JSX.Element;
     children?: any;
+    scroll?: {
+        sidebar: boolean;
+        content: boolean;
+    };
 }
 interface State {
     openKeys: string[];
     selectedKeys: string[];
     collapsed: boolean;
     siderWidth: number;
+    scroll: {
+        sidebar: boolean;
+        content: boolean;
+    };
 }
 export default class MenuRoot extends React.Component<Props> {
     state: State;

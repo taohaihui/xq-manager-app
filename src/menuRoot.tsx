@@ -25,14 +25,23 @@ interface Props {
   logo?: (collapsed: boolean) => JSX.Element,
   headerHeight?: number,
   headerComponent?: JSX.Element,
-  children?: any
+  children?: any,
+  scroll?: {
+    sidebar: boolean,
+    content: boolean
+  }
+  // scroll?:{ sidebar: true, content: true }
 }
 
 interface State {
   openKeys: string[],
   selectedKeys: string[],
   collapsed: boolean,
-  siderWidth: number
+  siderWidth: number,
+  scroll: {
+    sidebar: boolean,
+    content: boolean
+  }
 }
 
 export default class MenuRoot extends React.Component<Props> {
@@ -49,7 +58,12 @@ export default class MenuRoot extends React.Component<Props> {
       openKeys: this.props.openKeys,
       selectedKeys: this.props.selectedKeys,
       collapsed: this.props.collapsed, // 侧边栏的收缩状态
-      siderWidth: this.props.collapsed ? 80 : 200
+      siderWidth: this.props.collapsed ? 80 : 200,
+      scroll: {
+        sidebar: true,
+        content: true,
+        ...this.props.scroll
+      }
     };
 
     this.pathData = []; //存储所有可跳转路径
@@ -58,8 +72,15 @@ export default class MenuRoot extends React.Component<Props> {
 
   componentDidMount() {
     try {
-      this.menuScroll = new PerfectScrollbar(document.getElementById('menu-scroll-xq'));
-      this.contentScroll = new PerfectScrollbar(document.getElementById('layout-content-xq'));
+      const { sidebar, content } = this.state.scroll;
+
+      if (sidebar) {
+        this.menuScroll = new PerfectScrollbar(document.getElementById('menu-scroll-xq'));
+      }
+
+      if (content) {
+        this.contentScroll = new PerfectScrollbar(document.getElementById('layout-content-xq'));
+      }
     } catch (err) {
       // IE9不支持 PerfectScrollbar
     }
@@ -215,7 +236,6 @@ export default class MenuRoot extends React.Component<Props> {
               }
             </div>
 
-            {/* 注入设置面包屑的接口 */}
             <div
               id="layout-content-xq"
               style={{
@@ -225,10 +245,11 @@ export default class MenuRoot extends React.Component<Props> {
                 position: 'relative',
                 overflow: 'auto'
               }}>
-              <div style={{ minWidth: 1180 }}>
+              <div style={{ minWidth: 1180, height: '100%' }}>
                 {
                   React.cloneElement(
                     this.props.children,
+                    // 注入设置面包屑的接口
                     {
                       setBreadcrumb: this.setBreadcrumb.bind(this),
                       deleteBreadcrumb: this.deleteBreadcrumb.bind(this),

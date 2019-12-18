@@ -6,6 +6,10 @@ interface Props {
     navType?: string;
     tabNum?: number;
     historyType: string;
+    scroll?: {
+        sidebar: boolean;
+        content: boolean;
+    };
 }
 interface State {
     authInfo: any[];

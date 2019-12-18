@@ -11,7 +11,11 @@ interface Props {
   headerComponent?: JSX.Element,
   navType?: string,
   tabNum?: number,
-  historyType: string
+  historyType: string,
+  scroll?: {
+    sidebar: boolean,
+    content: boolean
+  }
 }
 interface State {
   authInfo: any[],
