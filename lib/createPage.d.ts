@@ -28,6 +28,7 @@ interface dirItem {
 declare function writeRouterFile(): void;
 interface MenuItem {
     key: string;
+    auth: string;
     title: string;
     subMenu?: [];
 }
