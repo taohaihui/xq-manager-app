@@ -1,3 +1,4 @@
 import App from './createApp';
-import history from './history';
-export { App, history };
+import { historyBrowser, historyHash } from './history';
+import Spin from './spin';
+export { App, historyBrowser, historyHash, Spin };

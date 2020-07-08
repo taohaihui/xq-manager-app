@@ -1,7 +1,7 @@
 {
   "name": "xq-manager-app",
   "version": "1.0.0",
-  "description": "后台管理系统初始化模板",
+  "description": "导出一个根组件，根据app.config.json配置文件生成路由",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
@@ -27,9 +27,11 @@
     "antd": "3.18.2",
     "history": "4.7.2",
     "perfect-scrollbar": "1.4.0",
+    "rc-notification": "^3.3.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-router-dom": "4.3.0"
+    "react-router-dom": "4.3.0",
+    "ua-device": "^0.1.10"
   },
   "devDependencies": {
     "@types/fs-extra": "^7.0.0",

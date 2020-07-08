@@ -1,45 +1,75 @@
 {
-  "menu": [
-    {
-      "key": "/system",
-      "title": "系统管理",
+  "menu": [{
+      "key": "/a",
+      "title": "模块A",
+      "icon": "form",
       "subMenu": [{
-          "key": "/system/list",
-          "title": "列表管理"
+          "key": "/a/a",
+          "title": "子模块a"
         },
         {
-          "key": "/system/manger",
-          "title": "列表管理"
+          "key": "/a/b",
+          "title": "子模块b"
         }
       ]
     },
     {
-      "key": "/organization/list",
-      "title": "机构管理"
+      "key": "/b",
+      "title": "模块B",
+      "icon": "form",
+      "subMenu": [{
+          "key": "/b/a",
+          "title": "子模块a"
+        },
+        {
+          "key": "/b/b",
+          "title": "子模块b"
+        }, {
+          "key": "/b/c",
+          "title": "子模块c-不会显示在menu菜单中",
+          "hidden": true
+        }
+      ]
     },
     {
-      "key": "/authorization/list",
-      "title": "机构权限管理"
+      "key": "/c",
+      "title": "模块C",
+      "icon": "form"
     },
     {
-      "key": "/configuration/list",
-      "title": "机构配置项管理"
+      "key": "/d",
+      "title": "模块D",
+      "icon": "form"
     },
     {
-      "key": "/administrator/list",
-      "title": "机构管理员管理"
+      "key": "/e",
+      "title": "模块E",
+      "icon": "form"
     },
     {
-      "key": "/user/list",
-      "title": "用户管理"
+      "key": "/f",
+      "title": "模块F",
+      "icon": "form"
     },
     {
-      "key": "/role/list",
-      "title": "角色管理"
+      "key": "/g",
+      "title": "模块G",
+      "icon": "form"
     },
     {
-      "key": "/log/list",
-      "title": "同步日志"
+      "key": "/h",
+      "title": "模块H",
+      "icon": "form"
     }
-  ]
+  ],
+  "other": [{
+      "key": "/i",
+      "title": "全局模块I"
+    },
+    {
+      "key": "/j",
+      "title": "全局模块J"
+    }
+  ],
+  "404": true
 }
